@@ -57,14 +57,24 @@ public class Iterables {
 	public static <E> Iterable<Pair<E, Integer>> histogram(final E [] array){
 		final Pair<E, Integer> [] hashmap = (Pair<E, Integer>[]) new Pair[array.length + 10];
 		
+		//prenche a tabela de dispersão com todos os valores do array
+		//tabela de de dispersao com colisoes externas
 		for(int i = 0; i< array.length;i++){
 			int m = hashmap.length;
 			int h = array[i].hashCode() % m;
-			int idx = (h < 0) ? h + m : h;
-			Pair<E, Integer> x = new Pair<E, Integer>(array[i],idx);
-			x.next = hashmap[idx];
-			hashmap[idx] = x;			
-		}	
+			h = (h < 0) ? h + m : h;			
+			Pair<E, Integer> x = new Pair<E, Integer>(array[i],1);
+			if(hashmap[h] == null || !hashmap[h].first.equals(x.first)){
+				//adiciona um novo par se posição da tabela estiver vazia
+				// ou o valor for diferente do existente
+				x.next = hashmap[h];
+				hashmap[h] = x;		
+			}
+			else
+				//caso o valor do par ja existir
+				//apenas incrementa o contador de ocorrencias
+				hashmap[h].second++;			
+		}			
 		
 		return (Iterable<Pair<E, Integer>>) new Iterable<Pair<E, Integer>>(){
 			@Override
@@ -73,22 +83,20 @@ public class Iterables {
 					int idx = 0;
 					Pair <E,Integer> curr = null;
 					@Override
-					public boolean hasNext() {	
-						System.out.println("chama hasnext " + curr);
+					public boolean hasNext() {						
 						while(curr == null){							
-							if(hashmap[idx] != null){
-								curr = hashmap[idx];								
-							}							
+							if(hashmap[idx] != null)
+								curr = hashmap[idx];														
 							if((++idx) == hashmap.length) return false; 
 						}
 						return true;
 					}
 
 					@Override
-					public Pair<E, Integer> next() {
-						System.out.println("chama next");
+					public Pair<E, Integer> next() {						
 						if(!hasNext()) 
 							throw new NoSuchElementException("No such element");
+						//System.out.println("next" + curr);
 						Pair <E,Integer> aux = curr;
 						curr = curr.next;
 						return aux;
@@ -96,7 +104,7 @@ public class Iterables {
 
 					@Override
 					public void remove() {
-						throw new UnsupportedOperationException("distinct:Iterator - remove not supported");
+						throw new UnsupportedOperationException("remove not supported");
 						
 					}
 					
