@@ -1,7 +1,7 @@
 package serie2;
 
 import static org.junit.Assert.*;
-import static serie2.Utils.histogram;
+import static serie2.Iterables.histogram;
 import static serie2.IterablesTest.*;
 
 import java.util.*;

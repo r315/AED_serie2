@@ -56,12 +56,6 @@ public class Utils {
 
 		
 	}
-
-
-	public static <E> Iterable<Pair<E, Integer>> histogram (final E[] array){
-		throw new UnsupportedOperationException();
-	}
-
 }
 
 
